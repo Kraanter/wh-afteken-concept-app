@@ -4,14 +4,11 @@ FROM node:20.13.1
 # Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and yarn.lock for the root workspace
-COPY package.json yarn.lock ./
+# Copy the entire workspace (including aftekenen and its contents)
+COPY . .
 
 # Install dependencies for the root workspace
 RUN yarn install --frozen-lockfile
-
-# Copy the entire workspace (including aftekenen and its contents)
-COPY . .
 
 # Install dependencies for aftekenen workspace
 RUN yarn workspace aftekenen install --frozen-lockfile
@@ -23,7 +20,7 @@ RUN yarn workspace aftekenen export:web
 COPY server.cert server.key /app/
 
 # Expose the port to connect to (HTTPS)
-EXPOSE 443
+EXPOSE 3000
 
 # Serve the static files using npx serve over HTTPS
 CMD ["yarn", "workspace", "aftekenen", "serve:https"]
